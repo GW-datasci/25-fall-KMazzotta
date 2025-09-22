@@ -1,0 +1,67 @@
+This week, I completed my literature review on ultramarathons. I read and took notes on studies that both helped to provide me with some more background informations and context on what has already been studied and published. Some of my notes are as follows:
+
+https://pmc.ncbi.nlm.nih.gov/articles/PMC11910544/
+- Focused specifically on 50 mile ultras
+- Used XGBoost machine learning
+- Looked at sex, age group, location of race (country), athlete nationality, and effects on race speed
+- Looked at age-related performance decline
+- Looked at how gender gap changed with race distance and age
+- Predicted race speeds by country
+- Athletes from Africa were excluded from this study due to too low a rate of participation (likely attributed to lower prize money amounts for ultramarathon races, which is a significant factor for most African athletes)
+- Fastest runners came mainly from Eastern European countries
+- Majority of races are held in the US and the majority of athletes are American (in the data used)
+
+https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2018.00634/full
+- Less numbers-based and focused on the physiology and pathophysiology of ultramarathon runners
+- Helped to provide more information on the topic and some extra background information
+- Previous experience is the most important predictor variable followed by specific anthropometric and training characteristics
+- Women are slower than men, but the sex difference in performance has decreased in recent years
+- Average age at the first participation of an ultramarathon was around 36 years old
+- Went deep into the physical differences between marathon runners and ultramarathon runners
+- Listed key predictors as: age, body fat percentage, low bmi, low limb circumference, personal best running times, previous race experience, and high running speeds and volume during training
+- Commented on how pacing strategies also play a significant role
+- Proportion of women in ultramarathon racing is growing
+- Fond the difference between the sexes increased with increasing race distance or duration\age of peak performance is usually 35 years or older where for marathons it tends to cap out at around 30 years
+- Age of peak performance differs for sexes and differs for race distances
+
+https://journals.humankinetics.com/view/journals/ijsnem/29/2/article-p130.xml?content=fulltext
+- Focuses mainly on the nutrition aspect of ultramarathon running
+- While not something directly related to my capstone, figured this would be good to gain some more knowledge on the topic
+- Looks at how nutrition can affect performance
+- Laboratory controlled trials have shown that sleep deprivation adversely impacts running performance, compared with a full night of restful sleep, albeit in a 30-min running distance test
+- Unlike shorter endurance running events, it is clear that the physiological demands of both single-stage and multistage ultramarathon participation vary considerably
+- Looked at both single-stage and multi-stage ultramarathon races
+- “However, it appears that training status may influence food and fluid intake tolerance during running, since highly trained runners display lower gastrointestinal intolerance and symptoms during endurance running compared with recreational counterparts at the same relative running intensity, duration, and carbohydrate challenge dose (Costa et al., 2017a). It is suggested that these observations may be associated with practicing race nutrition during training at the elite level of competition.”
+- Goes deep into nutrition intake and timing and recommended practices
+- Nutritional needs is heavily influenced by the terrain, weather, and distance of the race
+- Carbohydrate consumption during exercise enhances endurance performance
+- Nutritional needs are highly individualized
+
+https://journals.lww.com/acsm-csmr/fulltext/2019/11000/Current_Trends_in_Ultramarathon_Running.7.aspx
+- Ultramarathons have become increasingly popular in recent years
+- This review focuses on recent findings and trends in ultramarathon running
+- In general, age 35 to 50 years, low body mass index (BMI), and low body fat are consistent predictors of better ultramarathon performance across many studies
+- Changes in metabolic biomarkers and hormone levels during an ultramarathon include: elevated skeletal muscle, cardiac muscle, and liver enzymes; elevated creatinine and variable fluctuations in electrolyte levels; elevated leukocytes, iron, and ferritin; decreased erythrocytes; elevated inflammatory markers (C-reactive protein, erythrocyte sedimentation rate, interleukins); decreased testosterone and increases in other hormones (cortisol, ACTH, adrenaline, growth hormone)
+- Many nutrition plans are individualized and vary on athlete, race distance, conditions, and races in general
+- Overhydration can be more dangerous than underhydration
+- “Multiple studies have examined supplements as ergogenic aids for ultraendurance events. A placebo-control trial showed riboflavin may improve muscle soreness and aid in earlier recovery. Other vitamins and minerals, however, have not been proven to enhance ultramarathon performance.”
+- Recent literature suggests that ultramarathoners may have high rates of psychological issues, including exercise addiction and depression
+- Training methods and equipment vary greatly across races
+- This article does not focus on a specific distance and instead looks at ultramarathons as a whole
+- Looks at ultramarathon running with an aim to help guide participation and medical care for athletes
+
+https://www.tandfonline.com/doi/full/10.1080/02640414.2013.825729
+- Looked at investigating participation trends for the origin of athletes competing in 100km ultramarathons and determine the nationalities of athletes achieving the fastest 100km race times worldwide
+- Used data from 100km races completed between 1998 and 2011
+- Used single and multi-level regression analyses
+- Most of finishers were from Europe, particularly France
+- International Kenyan runners stated economic reasons to become a competitive athlete
+- Japanese runners hold the current records for both men and women fastest 100km times
+- All athletes who participated in a 100-km ultra-marathon worldwide between 1998 and 2011 were analysed for the association between demography and performance
+- The annual number of finishers increased exponentially across years for both men and women
+- I wonder how these numbers have changed since 2011 with ultramarathon running becoming more popular?
+- Also investigated associations between changes in the number of finishers and changes in mean income in the general population
+- Hoffman and Fogard (Citation2012) investigated demographic characteristics of 161-km ultra-marathoners and reported that participants in 161-km ultra-marathons were mostly middle-aged (>45 years) married men who are well-educated and rarely missed work because of illness or injury and maintained appropriate body mass compared with the general population
+- Economic reasons are not the main motivator for competing in such races, there is usually a social motivation
+- Lack of African racers/races can be attributed to the lack of financial motivation
+- The reasons for Japanese dominance in 100km races is unclear
