@@ -1,0 +1,19 @@
+This week was a bit slower on the data side, but I spent some time troubleshooting and organizing my project setup. I'm still trying to figure out how to push my updates in RStudio to my GitHub repository, so most of my focus has been on figuring that out. I plan to get that fully working this coming week so I can start pushing udates directly to my GitHub as I work.
+
+I did start going through my data and cleaning it up using the tidyverse and janitor packages. Due to the GitHub/R issue, I have pasted a snippet of my code to clean the data so far. Right now, I’m focusing only on ultramarathons held in the U.S. and removing incomplete entries.
+
+Some of my code so far (until I can figure out how to push updates):
+
+library(tidyverse)
+library(janitor)
+ultras <- read_csv("ultras.csv") %>% 
+  clean_names() %>%
+  filter(
+         !is.na(athlete_club) &
+         !is.na(athlete_year_of_birth) &
+         !is.na(athlete_age_category) &
+         str_detect(event_name, "USA"))
+summary(ultras)
+
+I'm having some trouble with the code so I have been also working on figuring out why warning are popping up and how to resolve them.
+Next week, I’m planning to finally figure out the GitHub situation, clean up some remaining parsing issues in my data import, and start creating a few summary plots to explore trends by distance and age group.
