@@ -2,4 +2,4 @@ This week I worked on some more data cleaning and started some very rough visual
 We went over briefly in class on how to commit changes to the repo and work out some of the issues I was having with that so I will now be able to commit changes as I amke them!
 I also added my data into the gitignore folder and will work on compiling a smaller file to put into the sampledata folder. One idea that crossed my mind is breaking up the dataset into smaller files by year, and maybe narrowing down the scope time-wise.
 Other than those changes, I created some very basic visualizations and was able to commit those changes by myself!
-This week I plan on making the smaller data files and cleaning up/making some more visualizations of the data!
+This week I plan on making the smaller data files and cleaning up/making some more visualizations of the data and maybe try to get started on some analysis?
