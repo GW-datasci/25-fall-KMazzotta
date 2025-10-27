@@ -148,3 +148,7 @@ avg_100mi_partic <- nrow(hundred_mi_data) / length(unique(hundred_mi_data$event_
 avg_100mi_partic 
 # = 183.49
 
+# average of the average race participants
+avg_avg <- (avg_50k_partic+avg_50mi_partic+avg_100k_partic+avg_100mi_partic)/4
+avg_avg
+# = 187.05
