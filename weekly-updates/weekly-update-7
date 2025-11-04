@@ -1,0 +1,4 @@
+This week I worked on some preliminary regression models and worked on changing some of my data types to make regression easier. The times of races were saved as character values, so I worked on convertimg them to times and then hours for analyisis purposes.
+I also worked on adding an age column by subracting the athlete year of birth from the year of the race, however, this brought some issues in the data to my attention.
+There are many calculated ages udner 18, with the lowest being 2, an agae that is simply not feasible. I will have to do some more thinking on the best way to correct this issue, but I am currently leaning towards only including data for people 21+ on race day to safely eliminate these strange age cases.
+This week I will continue to create and fine tune my models and look into how I want to present my research by looking through and hopefully choosing a template.
