@@ -77,8 +77,8 @@ run same regressions for both and compare
 # 50km data
 fifty_k_data <- ultras %>%
   filter(event_distance_length %in% c("50km", "33mi")) %>%
-  group_by(event_name) %>%
-  filter(n() > 200) %>%
+  group_by(event_number_of_finishers) %>%
+  filter(event_number_of_finishers > 200) %>%
   ungroup() %>%
   group_by(year_of_event) %>%
   filter(year_of_event >= 2015) %>%
@@ -87,8 +87,8 @@ fifty_k_data <- ultras %>%
 # 50mi data
 fifty_mi_data <- ultras %>%
   filter(event_distance_length == "50mi") %>%
-  group_by(event_name) %>%
-  filter(n() > 200) %>%
+  group_by(event_number_of_finishers) %>%
+  filter(event_number_of_finishers > 200) %>%
   ungroup() %>%
   group_by(year_of_event) %>%
   filter(year_of_event >= 2015) %>%
@@ -97,8 +97,8 @@ fifty_mi_data <- ultras %>%
 # 100km data
 hundred_k_data <- ultras %>%
   filter(event_distance_length == "100km") %>%
-  group_by(event_name) %>%
-  filter(n() > 200) %>%
+  group_by(event_number_of_finishers) %>%
+  filter(event_number_of_finishers > 200) %>%
   ungroup() %>%
   group_by(year_of_event) %>%
   filter(year_of_event >= 2015) %>%
@@ -107,8 +107,8 @@ hundred_k_data <- ultras %>%
 # 100mi data
 hundred_mi_data <- ultras %>%
   filter(event_distance_length == "100mi") %>%
-  group_by(event_name) %>%
-  filter(n() > 200) %>%
+  group_by(event_number_of_finishers) %>%
+  filter(event_number_of_finishers > 200) %>%
   ungroup() %>%
   group_by(year_of_event) %>%
   filter(year_of_event >= 2015) %>%
@@ -183,6 +183,9 @@ plot(hundred_k_sample$athlete_average_speed, hundred_k_sample$event_number_of_fi
 # save plots as png
 ggsave
 
+
+# use overleaf
+
 ggplot(hundred_k_sample, aes(x = athlete_country)) +
   geom_bar() +
   theme_minimal() +
@@ -198,17 +201,38 @@ hundred_k_sample %>%
 summary(hundred_k_data)
 
 fifty_k_sample <- fifty_k_data %>%
-  sample_n(size = 244695*.01, replace = FALSE) %>%
+  sample_n(size = 243502*.01, replace = FALSE) %>%
+  mutate(athlete_performance = as.numeric(athlete_performance, "hours"))
+
+fifty_mi_sample <- fifty_mi_data %>%
+  sample_n(size = 84274*.01, replace = FALSE) %>%
+  mutate(athlete_performance = as.numeric(athlete_performance, "hours"))
+
+hundred_k_sample <- hundred_k_data %>%
+  sample_n(size = 23568*.01, replace = FALSE) %>%
+  mutate(athlete_performance = as.numeric(athlete_performance, "hours"))
+
+hundred_mi_sample <- hundred_mi_data %>%
+  sample_n(size = 47691*.01, replace = FALSE) %>%
   mutate(athlete_performance = as.numeric(athlete_performance, "hours"))
 
 plot(fifty_k_sample$age, fifty_k_sample$athlete_average_speed)
 
 
 prelim_50k_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = fifty_k_sample)
+prelim_50mi_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = fifty_mi_sample)
+prelim_100k_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = hundred_k_sample)
+prelim_100mi_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = hundred_mi_sample)
+
 
 prelim_50k_regression
 
 summary(prelim_50k_regression)
+summary(prelim_100k_regression)
+summary(prelim_50mi_regression)
+summary(prelim_100mi_regression)
+
+anova(prelim_50k_regression, prelim_50mi_regression)
 
 
 
