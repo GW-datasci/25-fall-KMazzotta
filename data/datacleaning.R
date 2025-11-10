@@ -4,10 +4,12 @@ library(readr)
 install.packages("tidyverse")
 install.packages("janitor")
 install.packages("ggplot2")
+install.packages("lubridate")
 library(tidyverse)
 library(janitor)
 library(ggplot2)
 library(dplyr)
+library(lubridate)
 
 ultras <- read_csv("ultras.csv") %>% 
   clean_names() %>%
@@ -15,10 +17,23 @@ ultras <- read_csv("ultras.csv") %>%
          !is.na(athlete_club) &
          !is.na(athlete_year_of_birth) &
          !is.na(athlete_age_category) &
-         str_detect(event_name, "USA"))
+         str_detect(event_name, "USA")) %>%
+  mutate(athlete_performance = hms(str_replace_all(athlete_performance, "h", "")))
 
 summary(ultras)
 
+ultras$age <- ultras$year_of_event - ultras$athlete_year_of_birth
+
+
+ultras <- ultras %>%
+  group_by(age) %>%
+  filter(age > 18) %>%
+  ungroup()
+
+summary(ultras$age)
+min(ultras$age)
+
+problems(ultras)
 
 # some basic plots to start
 ggplot(ultras, aes(x = athlete_gender)) +
@@ -100,10 +115,6 @@ hundred_mi_data <- ultras %>%
   ungroup()
 
 
-
-
-
-
 # looking for the average number of participants in 50k data
 fifty_k_data <- ultras %>%
   filter(event_distance_length %in% c("50km", "33mi")) %>%
@@ -152,3 +163,53 @@ avg_100mi_partic
 avg_avg <- (avg_50k_partic+avg_50mi_partic+avg_100k_partic+avg_100mi_partic)/4
 avg_avg
 # = 187.05
+
+
+
+# for regression split the data for junior exploration
+# train and test 
+
+#70% for train
+#30% for test after the exploration is done. makr the swithc at the end before mating the report
+
+
+hundred_k_sample <- hundred_k_data %>%
+  sample_n(size = 23604*.3, replace = FALSE)
+
+plot(hundred_k_sample$athlete_average_speed, hundred_k_sample$event_number_of_finishers)
+
+# make a column for athlete age at time of race
+
+# save plots as png
+ggsave
+
+ggplot(hundred_k_sample, aes(x = athlete_country)) +
+  geom_bar() +
+  theme_minimal() +
+  labs(x = "Athlete Country", y = "Count", title = "Number of Athletes per Country (100K)")
+
+hundred_k_sample %>%
+  distinct(event_name, athlete_country) %>%
+  ggplot(aes(x = athlete_country)) +
+  geom_bar() +
+  theme_minimal() +
+  labs(x = "Country", y = "Number of Events", title = "Events per Country (100K)")
+
+summary(hundred_k_data)
+
+fifty_k_sample <- fifty_k_data %>%
+  sample_n(size = 244695*.01, replace = FALSE) %>%
+  mutate(athlete_performance = as.numeric(athlete_performance, "hours"))
+
+plot(fifty_k_sample$age, fifty_k_sample$athlete_average_speed)
+
+
+prelim_50k_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = fifty_k_sample)
+
+prelim_50k_regression
+
+summary(prelim_50k_regression)
+
+
+
+  
