@@ -22,12 +22,12 @@ ultras <- read_csv("ultras.csv") %>%
 
 summary(ultras)
 
-ultras$age <- ultras$year_of_event - ultras$athlete_year_of_birth
+ultras$athlete_age <- ultras$year_of_event - ultras$athlete_year_of_birth
 
 
 ultras <- ultras %>%
-  group_by(age) %>%
-  filter(age > 18) %>%
+  group_by(athlete_age) %>%
+  filter(athlete_age > 18) %>%
   ungroup()
 
 summary(ultras$age)
@@ -174,7 +174,7 @@ avg_avg
 
 
 hundred_k_sample <- hundred_k_data %>%
-  sample_n(size = 23604*.3, replace = FALSE)
+  sample_n(size = 9146*.3, replace = FALSE)
 
 plot(hundred_k_sample$athlete_average_speed, hundred_k_sample$event_number_of_finishers)
 
@@ -185,6 +185,10 @@ ggsave
 
 
 # use overleaf
+# use rshiny too
+
+
+
 
 ggplot(hundred_k_sample, aes(x = athlete_country)) +
   geom_bar() +
@@ -201,28 +205,39 @@ hundred_k_sample %>%
 summary(hundred_k_data)
 
 fifty_k_sample <- fifty_k_data %>%
-  sample_n(size = 243502*.01, replace = FALSE) %>%
+  sample_n(size = 62764*.7, replace = FALSE) %>%
   mutate(athlete_performance = as.numeric(athlete_performance, "hours"))
 
 fifty_mi_sample <- fifty_mi_data %>%
-  sample_n(size = 84274*.01, replace = FALSE) %>%
+  sample_n(size = 29796*.7, replace = FALSE) %>%
   mutate(athlete_performance = as.numeric(athlete_performance, "hours"))
 
 hundred_k_sample <- hundred_k_data %>%
-  sample_n(size = 23568*.01, replace = FALSE) %>%
+  sample_n(size = 9146*.7, replace = FALSE) %>%
   mutate(athlete_performance = as.numeric(athlete_performance, "hours"))
 
 hundred_mi_sample <- hundred_mi_data %>%
-  sample_n(size = 47691*.01, replace = FALSE) %>%
+  sample_n(size = 11822*.7, replace = FALSE) %>%
   mutate(athlete_performance = as.numeric(athlete_performance, "hours"))
 
-plot(fifty_k_sample$age, fifty_k_sample$athlete_average_speed)
+plot(fifty_k_sample$athlete_age, fifty_k_sample$athlete_average_speed)
+
+plot(hundred_k_sample$athlete_age, hundred_k_sample$athlete_average_speed)
 
 
-prelim_50k_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = fifty_k_sample)
-prelim_50mi_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = fifty_mi_sample)
-prelim_100k_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = hundred_k_sample)
-prelim_100mi_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = hundred_mi_sample)
+# regression for
+ prelim_50k_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = fifty_k_sample)
+# prelim_50mi_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = fifty_mi_sample)
+# prelim_100k_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = hundred_k_sample)
+# prelim_100mi_regression <- lm(athlete_performance ~ event_number_of_finishers + athlete_gender, data = hundred_mi_sample)
+
+
+# regression for age and gender
+prelim_50k_regression <- lm(athlete_performance ~ athlete_age + athlete_gender + athlete_country, data = fifty_k_sample)
+prelim_50mi_regression <- lm(athlete_performance ~ athlete_age + athlete_gender + athlete_country, data = fifty_mi_sample)
+prelim_100k_regression <- lm(athlete_performance ~ athlete_age + athlete_gender + athlete_country, data = hundred_k_sample)
+prelim_100mi_regression <- lm(athlete_performance ~ athlete_age + athlete_gender + athlete_country, data = hundred_mi_sample)
+
 
 
 prelim_50k_regression
@@ -232,8 +247,34 @@ summary(prelim_100k_regression)
 summary(prelim_50mi_regression)
 summary(prelim_100mi_regression)
 
-anova(prelim_50k_regression, prelim_50mi_regression)
+
+# stepwise regression
+stepwise_50k_regression <- fifty_k_sample %>%
+  lm(athlete_performance ~ event_number_of_finishers + athlete_country + athlete_gender + athlete_average_speed + athlete_age, data = .) %>%
+  step(direction = "both")
+
+
+par(mfrow = c(2,2))
+
+plot(prelim_50k_regression, which=2, main="50k", pch=20)
+
+plot(prelim_100k_regression, which=2, main="100k", pch=20)
+
+plot(prelim_50mi_regression, which=2, main="50mi", pch=20)
+
+plot(prelim_100mi_regression, which=2, main="100mi", pch=20)
 
 
 
+
+
+par(mfrow = c(2,2))
+
+plot(prelim_50k_regression, which=1, main="50k", pch=20)
+
+plot(prelim_100k_regression, which=1, main="100k", pch=20)
+
+plot(prelim_50mi_regression, which=1, main="50mi", pch=20)
+
+plot(prelim_100mi_regression, which=1, main="100mi", pch=20)
   
