@@ -1,0 +1,3 @@
+This week I worked on removing athletes with ages <18 as I did notice there were some concerning ages present in the data.
+I also ran a few more regression models for each race distance, and while the models all seemed to have significant factors, they had very low R^2 values.
+Thius weeK I am working on starting my final report and also working on fixing my models to make sure the factors are siginificant in explaining race finish time.
