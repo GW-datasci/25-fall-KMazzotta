@@ -9,7 +9,7 @@ df <- do.call(rbind, lapply(trial_ultra, as.data.frame))
 
 library(dplyr)
 df <- bind_rows(trial_ultra) 
-  
+
 trial_ultra <- fromJSON("utmb-race-data-raw.json", flatten=TRUE)
 colnames(json_data)
 str(trial_ultra, max.level = 1)
