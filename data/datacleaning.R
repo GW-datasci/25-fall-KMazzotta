@@ -250,9 +250,9 @@ summary(prelim_100mi_regression)
 
 # stepwise regression
 stepwise_50k_regression <- fifty_k_sample %>%
-  lm(athlete_performance ~ event_number_of_finishers + athlete_country + athlete_gender + athlete_average_speed + athlete_age, data = .) %>%
+  lm(athlete_performance ~ event_number_of_finishers + athlete_country + athlete_gender + athlete_age, data = .) %>%
   step(direction = "both")
-
+summary(stepwise_50k_regression)
 
 par(mfrow = c(2,2))
 
@@ -278,3 +278,12 @@ plot(prelim_50mi_regression, which=1, main="50mi", pch=20)
 
 plot(prelim_100mi_regression, which=1, main="100mi", pch=20)
   
+
+
+
+
+
+# use beautiful soup to scrape utmb data anfd maybe start over...eek
+
+
+work on final report!!
