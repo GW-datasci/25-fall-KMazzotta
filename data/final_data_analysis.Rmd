@@ -269,6 +269,12 @@ plot(outlierless_log_both_step_model, which=1, main="both directions", pch=20)
 plot(outlierless_log_both_step_model, which=2, main="both directions", pch=20)
 ```
 
+
+
+```{r}
+plot(log_both_step_model)
+```
+
 these clusters are due to the most common distances 50k, 50mi, 100k, and 100mi
 
 
