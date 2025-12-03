@@ -2,11 +2,11 @@
 install.packages("jsonlite")
 library("jsonlite")
 
-json_data <- fromJSON(paste(readLines("utmb-race-data-raw.json"), collapse=""))
+#json_data <- fromJSON(paste(readLines("utmb-race-data-raw.json"), collapse=""))
 
 
 
-us_races <- fromJSON(paste(readLines("us_races.json"), collapse=""))
+#us_races <- fromJSON(paste(readLines("us_races.json"), collapse=""))
 
 
 
@@ -33,6 +33,7 @@ us_races <- trial_ultra[
   })
 ]
 
+#maybe disregard this aspect
 # only races with 200+ participants
 us_races_filtered <- us_races[
   sapply(us_races, function(x) {
@@ -45,7 +46,7 @@ us_races_filtered <- us_races[
 
 
 
-
+#writing a us_races json file
 write_json(
   us_races, 
   path = "us_races.json", 
@@ -105,7 +106,7 @@ test_df <- imap_dfr(us_races, ~{
     pct_age_60_64 = .x$Age$`55-59` / sum(unlist(.x$Age)),
     pct_age_65_69 = .x$Age$`55-59` / sum(unlist(.x$Age)),
     pct_age_70_74 = .x$Age$`55-59` / sum(unlist(.x$Age)),
-    pct_age_u18   = .x$Age$`U18` / sum(unlist(.x$Age))
+    pct_age_u18   = .x$Age$`U18`|`U20` / sum(unlist(.x$Age))
   )
 })
 
@@ -122,7 +123,6 @@ race_df <- race_df %>%
   )
 
 # flatten and create a df on participants (each row is a participant)
-
 
 
 

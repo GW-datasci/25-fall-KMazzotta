@@ -233,7 +233,6 @@ plot(log_both_step_model, which=2, main="both directions", pch=20)
 ##### checking VIF of log stepwise regression models
 ```{r}
 vif(log_backward_step_model, type = "predictor")
-
 ```
 
 look for outliers using cooks distance
