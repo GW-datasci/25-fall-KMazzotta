@@ -3,3 +3,290 @@ title: "final_data_analysis"
 output: html_document
 ---
 
+
+- install and load necessary packages
+```{r}
+#install.packages("jsonlite")
+library(jsonlite)
+#install.packages("dplyr")
+library(dplyr)
+#install.packages("purrr")
+library(purrr)
+#install.packages("stringr")
+library(stringr)
+#install.packages("readr")
+library(readr)
+#install.packages("corrplot")
+library(corrplot)
+#install.packages("ggplot2")
+library(ggplot2)
+#install.packages("MASS")
+library("MASS")
+#install.packages("car")
+library("car")
+
+
+```
+
+
+- This is where I'm loading the dataset in
+- converting file to csv
+- creating a us subset for only us races
+- also creating a csv file for just all races
+
+```{r}
+utmb_data <- fromJSON("utmb-race-data-raw.json", flatten=TRUE)
+```
+
+```{r}
+str(utmb_data[[1]])
+```
+
+
+
+##### US races
+
+creating a json variable of us races
+```{r}
+us_races <- utmb_data[
+  sapply(utmb_data, function(x) {
+    grepl("United States|USA|US$", x$`City / Country`, ignore.case = TRUE)
+  })
+]
+```
+
+turning us races ito a data frame for analysis
+also changing age categories to have larger bins: under 34, 35-59, 60+ as there isnt that much variation with only a few years
+```{r}
+us_df <- imap_dfr(us_races, ~{
+  results <- .x$Results
+  total_age <- sum(unlist(.x$Age))
+  tibble(
+    race_id        = .y,
+    city_country   = .x$`City / Country`,
+    date           = .x$Date,
+    distance       = .x$Distance,
+    elevation_gain = .x$`Elevation Gain`,
+    n_participants = length(results),
+    mean_time_hrs      = mean(results, na.rm = TRUE),
+    median_time_hrs    = median(results, na.rm = TRUE),
+    sd_time            = sd(results, na.rm = TRUE),
+    min_time_hrs       = min(results, na.rm = TRUE),
+    max_time_hrs       = max(results, na.rm = TRUE),
+    pct_women      = .x$Sex$Women / sum(unlist(.x$Sex)),
+    pct_age_u35     = sum(unlist(.x$Age[c("U18", "U20", "20-34")]), na.rm = TRUE) / total_age,
+    pct_age_35_59     = sum(unlist(.x$Age[c("35-39", "40-44", "45-49", "50-54", "55-59")]), na.rm = TRUE) / total_age,
+    pct_age_60_plus = sum(unlist(.x$Age[c("60-64", "65-69", "70-74", "75-79", "80+")]), na.rm = TRUE) / total_age
+  )
+})
+
+```
+
+find a cutoff for race size (number of participants)
+```{r}
+# min number of participants
+min(us_df$n_participants, na.rm = TRUE)
+# 17
+
+# max number of participants
+max(us_df$n_participants, na.rm = TRUE)
+1842
+
+# distribution
+summary(us_df$n_participants)
+```
+
+will use the 1st quartile as the cutoff (min number of participants for a race to be included) (85 participants)
+
+```{r}
+us_df <- us_df %>% filter(n_participants >= 85)
+```
+
+convert distance and elevation columns to be numeric
+```{r}
+colnames(us_df)[4] <- "distance_km"
+colnames(us_df)[5] <- "elevation_gain_m"
+
+us_df <- us_df %>%
+  mutate(
+    distance_km = parse_number(distance_km),
+    elevation_gain_m = parse_number(elevation_gain_m)
+  )
+```
+
+will also only use distances greater than or equal to 50km
+```{r}
+us_df <- us_df %>% filter(distance_km >= 50)
+```
+
+center distance and elevation gain values
+```{r}
+mean_distance_km <- mean(us_df$distance_km)
+mean_elevation_m <- mean(us_df$elevation_gain_m)
+
+us_df$distance_km <- us_df$distance_km - mean_distance_km
+us_df$elevation_gain_m <- us_df$elevation_gain_m - mean_elevation_m
+```
+
+# reminder that now all distance and elevation values are centered
+# distance baseline = 85.0581
+# elevation baseline = 2564.2234
+
+
+##### EDA
+
+making a correlation matrix to see which factors should be included in regression
+remove pct_u35 to fix correlation issues (perfect multicollinearity)
+```{r}
+correlation_matrix <- us_df %>% dplyr::select(distance_km, elevation_gain_m, pct_women, pct_age_35_59, pct_age_60_plus)
+
+corrplot(cor(correlation_matrix))
+```
+
+### Preliminary scatterplots for analysis
+
+- scatterplot of distance and elevation to see if linear relationship (maybe non-linear)
+
+- scatterplot indicates potential quadratic relationship between distance and mean finish time
+```{r}
+ggplot(us_df, aes(x = distance_km, y = mean_time_hrs)) +
+      geom_point()
+
+ggplot(us_df, aes(x = elevation_gain_m, y = mean_time_hrs)) +
+      geom_point()
+```
+
+
+
+
+### Regression
+
+prelim regression with just main effects
+remember that we are using pct_u35 as the base so it is not included in models (to avoid perfect multicollinearity)
+```{r}
+prelim_regression <- lm(mean_time_hrs ~ distance_km + I(distance_km^2) + elevation_gain_m +
+                          pct_women + pct_age_35_59 + pct_age_60_plus, data = us_df)
+summary(prelim_regression)
+
+par(mfrow = c(1,2))
+plot(prelim_regression, which=1, main="prelim model", pch=20)
+plot(prelim_regression, which=2, main="prelim model", pch=20)
+```
+##### Using log regression as main model for robustness
+due to data not appearing to be normally distributing, going to attempt logistic regression mmodel
+```{r}
+us_df <- us_df %>%
+  mutate(log_mean_time = log(mean_time_hrs))
+```
+
+parsimonious model
+```{r}
+log_regression <- lm(log_mean_time ~ distance_km + I(distance_km^2) + elevation_gain_m +
+                          pct_women + pct_age_35_59 + pct_age_60_plus, data = us_df)
+
+summary(log_regression)
+
+par(mfrow = c(1,2))
+plot(log_regression, which=1, main="prelim model", pch=20)
+plot(log_regression, which=2, main="prelim model", pch=20)
+```
+
+
+regressions with full model (interaction and higher order) adding only terms that are hypothesized to be significant and relevant
+```{r}
+full_log_regression <- lm(log_mean_time ~ distance_km + I(distance_km^2) + elevation_gain_m +
+                          pct_women + pct_age_35_59 + pct_age_60_plus +
+                          distance_km*elevation_gain_m + distance_km*pct_women +
+                          elevation_gain_m*pct_women, data = us_df)
+summary(full_log_regression)
+
+par(mfrow = c(1,2))
+plot(full_log_regression, which=1, main="prelim model", pch=20)
+plot(full_log_regression, which=2, main="prelim model", pch=20)
+```
+
+regression with reduced model after stepwise backward elimination
+```{r}
+log_backward_step_model <- stepAIC(full_log_regression, direction = "backward")
+
+summary(log_backward_step_model)
+
+par(mfrow = c(1,2))
+plot(log_backward_step_model, which=1, main="backward", pch=20)
+plot(log_backward_step_model, which=2, main="backward", pch=20)
+
+```
+
+
+regression using stepwise elimination (both directions)
+```{r}
+log_both_step_model <- stepAIC(full_log_regression, direction = "both")
+
+summary(log_both_step_model)
+
+par(mfrow = c(1,2))
+plot(log_both_step_model, which=1, main="both directions", pch=20)
+plot(log_both_step_model, which=2, main="both directions", pch=20)
+```
+
+
+##### checking VIF of log stepwise regression models
+```{r}
+vif(log_backward_step_model, type = "predictor")
+
+```
+
+look for outliers using cooks distance
+```{r}
+cooks_distance <- cooks.distance(log_both_step_model)
+threshold <- 4 / nrow(us_df)
+influential_observations <- which(cooks_distance > threshold)
+
+plot(log_both_step_model)
+```
+
+
+##### rerun regression without outliers to see if conclusions change (sensitivity analysis)
+
+remove outliers
+```{r}
+keep_rows <- which(cooks_distance <= threshold)
+us_df_no_outliers <- us_df[keep_rows, ]
+```
+
+stepwise regression using data with outliers removes to check sensitivity and robustness
+```{r}
+no_outlier_log_regression <- lm(log_mean_time ~ distance_km + I(distance_km^2) + elevation_gain_m +
+                          pct_women + pct_age_35_59 + pct_age_60_plus +
+                          distance_km*elevation_gain_m + distance_km*pct_women +
+                          elevation_gain_m*pct_women, data = us_df_no_outliers)
+
+outlierless_log_both_step_model <- stepAIC(no_outlier_log_regression, direction = "both")
+
+summary(outlierless_log_both_step_model)
+
+par(mfrow = c(1,2))
+plot(outlierless_log_both_step_model, which=1, main="both directions", pch=20)
+plot(outlierless_log_both_step_model, which=2, main="both directions", pch=20)
+```
+
+these clusters are due to the most common distances 50k, 50mi, 100k, and 100mi
+
+
+deciding to use the outlier-free model
+
+
+vif analysis
+```{r}
+vif(outlierless_log_both_step_model, type = "predictor")
+```
+
+
+
+
+
+
+
+
+
+
