@@ -24,6 +24,8 @@ library(ggplot2)
 library("MASS")
 #install.packages("car")
 library("car")
+#install.packages("broom")
+library(broom)
 
 
 ```
@@ -288,6 +290,66 @@ vif(outlierless_log_both_step_model, type = "predictor")
 
 
 
+#### making scatterplots to put on the poster to show distributions
+
+
+scatterplot of distance and mean time (with outliers)
+```{r}
+ggplot(us_df, aes(x = distance_km, y = mean_time_hrs)) +
+  geom_point(alpha = 0.6, size = 3) +
+  geom_smooth(method = "lm", se = FALSE, col = "#f1e60e") +
+  labs(
+    x = "Race Distance (km)",
+    y = "Mean Finish Time (hrs)",
+    title = "Race Distance Vs Mean Finish Time"
+  ) +
+  theme_minimal(base_size = 15)
+```
+
+
+
+first scatterplot of mean time and distance with outliers removed
+```{r}
+ggplot(us_df_no_outliers, aes(x = distance_km, y = mean_time_hrs)) +
+  geom_point(alpha = 0.6, size = 3) +
+  geom_smooth(method = "lm", se = FALSE, col = "#f1e60e") +
+  labs(
+    x = "Race Distance (km)",
+    y = "Mean Finish Time (hrs)",
+    title = "Race Distance Vs Mean Finish Time"
+  ) +
+  theme_minimal(base_size = 15)
+```
+
+
+
+
+second scatterplot of mean time and elevation gain (with outliers)
+```{r}
+ggplot(us_df, aes(x = elevation_gain_m, y = mean_time_hrs)) +
+  geom_point(alpha = 0.6, size = 3) +
+  geom_smooth(method = "lm", se = FALSE, col = "#f1e60e") +
+  labs(
+    x = "Elevation Gain (m)",
+    y = "Mean Finish Time (hrs)",
+    title = "Elevation Gain Vs Mean Finish Time"
+  ) +
+  theme_minimal(base_size = 15)
+```
+
+
+second scatterplot of mean time and elevation gain with outliers removed
+```{r}
+ggplot(us_df_no_outliers, aes(x = elevation_gain_m, y = mean_time_hrs)) +
+  geom_point(alpha = 0.6, size = 3) +
+  geom_smooth(method = "lm", se = FALSE, col = "#f1e60e") +
+  labs(
+    x = "Elevation Gain (m)",
+    y = "Mean Finish Time (hrs)",
+    title = "Elevation Gain Vs Mean Finish Time"
+  ) +
+  theme_minimal(base_size = 15)
+```
 
 
 
