@@ -195,6 +195,10 @@ gt_table <- gt(table_df) |>
     pct_age_35_59 = "35–59",
     pct_age_60_plus = "60+"
   ) |>
+  fmt_number(
+    columns = c(distance_km, elevation_gain_m, pct_women, pct_age_u35, pct_age_35_59, pct_age_60_plus),
+    decimals = 4
+  ) |>
   opt_stylize(style = 6, color = "blue") |>
   tab_options(
     heading.align = "center",

@@ -1752,6 +1752,10 @@ gt_table &lt;- gt(table_df) |&gt;
     pct_age_35_59 = &quot;35–59&quot;,
     pct_age_60_plus = &quot;60+&quot;
   ) |&gt;
+  fmt_number(
+    columns = c(distance_km, elevation_gain_m, pct_women, pct_age_u35, pct_age_35_59, pct_age_60_plus),
+    decimals = 4
+  ) |&gt;
   opt_stylize(style = 6, color = &quot;blue&quot;) |&gt;
   tab_options(
     heading.align = &quot;center&quot;,
@@ -1760,20 +1764,20 @@ gt_table &lt;- gt(table_df) |&gt;
   )
 
 gt_table</code></pre>
-<div id="dlgdcdvlmk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#dlgdcdvlmk table {
+<div id="irxirpliay" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#irxirpliay table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#dlgdcdvlmk thead, #dlgdcdvlmk tbody, #dlgdcdvlmk tfoot, #dlgdcdvlmk tr, #dlgdcdvlmk td, #dlgdcdvlmk th {
+#irxirpliay thead, #irxirpliay tbody, #irxirpliay tfoot, #irxirpliay tr, #irxirpliay td, #irxirpliay th {
 border-style: none;
 }
-#dlgdcdvlmk p {
+#irxirpliay p {
 margin: 0;
 padding: 0;
 }
-#dlgdcdvlmk .gt_table {
+#irxirpliay .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -1798,11 +1802,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#dlgdcdvlmk .gt_caption {
+#irxirpliay .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#dlgdcdvlmk .gt_title {
+#irxirpliay .gt_title {
 color: #333333;
 font-size: 20px;
 font-weight: initial;
@@ -1813,7 +1817,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#dlgdcdvlmk .gt_subtitle {
+#irxirpliay .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -1824,7 +1828,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#dlgdcdvlmk .gt_heading {
+#irxirpliay .gt_heading {
 background-color: #BEBEBE;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -1835,12 +1839,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#dlgdcdvlmk .gt_bottom_border {
+#irxirpliay .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #5F5F5F;
 }
-#dlgdcdvlmk .gt_col_headings {
+#irxirpliay .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #5F5F5F;
@@ -1854,7 +1858,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#dlgdcdvlmk .gt_col_heading {
+#irxirpliay .gt_col_heading {
 color: #FFFFFF;
 background-color: #0076BA;
 font-size: 100%;
@@ -1873,7 +1877,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#dlgdcdvlmk .gt_column_spanner_outer {
+#irxirpliay .gt_column_spanner_outer {
 color: #FFFFFF;
 background-color: #0076BA;
 font-size: 100%;
@@ -1884,13 +1888,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#dlgdcdvlmk .gt_column_spanner_outer:first-child {
+#irxirpliay .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#dlgdcdvlmk .gt_column_spanner_outer:last-child {
+#irxirpliay .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#dlgdcdvlmk .gt_column_spanner {
+#irxirpliay .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #5F5F5F;
@@ -1901,10 +1905,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#dlgdcdvlmk .gt_spanner_row {
+#irxirpliay .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#dlgdcdvlmk .gt_group_heading {
+#irxirpliay .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1929,7 +1933,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#dlgdcdvlmk .gt_empty_group_heading {
+#irxirpliay .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -1943,13 +1947,13 @@ border-bottom-width: 2px;
 border-bottom-color: #5F5F5F;
 vertical-align: middle;
 }
-#dlgdcdvlmk .gt_from_md > :first-child {
+#irxirpliay .gt_from_md > :first-child {
 margin-top: 0;
 }
-#dlgdcdvlmk .gt_from_md > :last-child {
+#irxirpliay .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#dlgdcdvlmk .gt_row {
+#irxirpliay .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1967,7 +1971,7 @@ border-right-color: #D5D5D5;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#dlgdcdvlmk .gt_stub {
+#irxirpliay .gt_stub {
 color: #333333;
 background-color: #89D3FE;
 font-size: 100%;
@@ -1979,7 +1983,7 @@ border-right-color: #D5D5D5;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dlgdcdvlmk .gt_stub_row_group {
+#irxirpliay .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1992,13 +1996,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#dlgdcdvlmk .gt_row_group_first td {
+#irxirpliay .gt_row_group_first td {
 border-top-width: 2px;
 }
-#dlgdcdvlmk .gt_row_group_first th {
+#irxirpliay .gt_row_group_first th {
 border-top-width: 2px;
 }
-#dlgdcdvlmk .gt_summary_row {
+#irxirpliay .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2007,14 +2011,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dlgdcdvlmk .gt_first_summary_row {
+#irxirpliay .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #5F5F5F;
 }
-#dlgdcdvlmk .gt_first_summary_row.thick {
+#irxirpliay .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#dlgdcdvlmk .gt_last_summary_row {
+#irxirpliay .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2023,7 +2027,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #5F5F5F;
 }
-#dlgdcdvlmk .gt_grand_summary_row {
+#irxirpliay .gt_grand_summary_row {
 color: #333333;
 background-color: #D5D5D5;
 text-transform: inherit;
@@ -2032,7 +2036,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dlgdcdvlmk .gt_first_grand_summary_row {
+#irxirpliay .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2041,7 +2045,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #5F5F5F;
 }
-#dlgdcdvlmk .gt_last_grand_summary_row_top {
+#irxirpliay .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2050,10 +2054,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #5F5F5F;
 }
-#dlgdcdvlmk .gt_striped {
+#irxirpliay .gt_striped {
 background-color: #EDF7FC;
 }
-#dlgdcdvlmk .gt_table_body {
+#irxirpliay .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #5F5F5F;
@@ -2061,7 +2065,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #5F5F5F;
 }
-#dlgdcdvlmk .gt_footnotes {
+#irxirpliay .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2074,7 +2078,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#dlgdcdvlmk .gt_footnote {
+#irxirpliay .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -2082,7 +2086,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dlgdcdvlmk .gt_sourcenotes {
+#irxirpliay .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2095,64 +2099,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#dlgdcdvlmk .gt_sourcenote {
+#irxirpliay .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dlgdcdvlmk .gt_left {
+#irxirpliay .gt_left {
 text-align: left;
 }
-#dlgdcdvlmk .gt_center {
+#irxirpliay .gt_center {
 text-align: center;
 }
-#dlgdcdvlmk .gt_right {
+#irxirpliay .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#dlgdcdvlmk .gt_font_normal {
+#irxirpliay .gt_font_normal {
 font-weight: normal;
 }
-#dlgdcdvlmk .gt_font_bold {
+#irxirpliay .gt_font_bold {
 font-weight: bold;
 }
-#dlgdcdvlmk .gt_font_italic {
+#irxirpliay .gt_font_italic {
 font-style: italic;
 }
-#dlgdcdvlmk .gt_super {
+#irxirpliay .gt_super {
 font-size: 65%;
 }
-#dlgdcdvlmk .gt_footnote_marks {
+#irxirpliay .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#dlgdcdvlmk .gt_asterisk {
+#irxirpliay .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#dlgdcdvlmk .gt_indent_1 {
+#irxirpliay .gt_indent_1 {
 text-indent: 5px;
 }
-#dlgdcdvlmk .gt_indent_2 {
+#irxirpliay .gt_indent_2 {
 text-indent: 10px;
 }
-#dlgdcdvlmk .gt_indent_3 {
+#irxirpliay .gt_indent_3 {
 text-indent: 15px;
 }
-#dlgdcdvlmk .gt_indent_4 {
+#irxirpliay .gt_indent_4 {
 text-indent: 20px;
 }
-#dlgdcdvlmk .gt_indent_5 {
+#irxirpliay .gt_indent_5 {
 text-indent: 25px;
 }
-#dlgdcdvlmk .katex-display {
+#irxirpliay .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#dlgdcdvlmk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#irxirpliay div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -2186,44 +2190,44 @@ height: 0px !important;
   <tbody class="gt_table_body">
     <tr><td headers="race_id" class="gt_row gt_right">10129.2018</td>
 <td headers="mean_time_hrs" class="gt_row gt_right">8.258698</td>
-<td headers="distance_km" class="gt_row gt_right">-35.058075</td>
+<td headers="distance_km" class="gt_row gt_right">−35.0581</td>
 <td headers="elevation_gain_m" class="gt_row gt_right">185.7766</td>
-<td headers="pct_women" class="gt_row gt_right">0.3333333</td>
-<td headers="pct_age_u35" class="gt_row gt_right">0.3750000</td>
-<td headers="pct_age_35_59" class="gt_row gt_right">0.6250000</td>
-<td headers="pct_age_60_plus" class="gt_row gt_right">0.00000000</td></tr>
+<td headers="pct_women" class="gt_row gt_right">0.3333</td>
+<td headers="pct_age_u35" class="gt_row gt_right">0.3750</td>
+<td headers="pct_age_35_59" class="gt_row gt_right">0.6250</td>
+<td headers="pct_age_60_plus" class="gt_row gt_right">0.0000</td></tr>
     <tr><td headers="race_id" class="gt_row gt_right gt_striped">10129.2019</td>
 <td headers="mean_time_hrs" class="gt_row gt_right gt_striped">8.553171</td>
-<td headers="distance_km" class="gt_row gt_right gt_striped">-35.058075</td>
+<td headers="distance_km" class="gt_row gt_right gt_striped">−35.0581</td>
 <td headers="elevation_gain_m" class="gt_row gt_right gt_striped">185.7766</td>
-<td headers="pct_women" class="gt_row gt_right gt_striped">0.4161074</td>
-<td headers="pct_age_u35" class="gt_row gt_right gt_striped">0.3758389</td>
-<td headers="pct_age_35_59" class="gt_row gt_right gt_striped">0.5838926</td>
-<td headers="pct_age_60_plus" class="gt_row gt_right gt_striped">0.04026846</td></tr>
+<td headers="pct_women" class="gt_row gt_right gt_striped">0.4161</td>
+<td headers="pct_age_u35" class="gt_row gt_right gt_striped">0.3758</td>
+<td headers="pct_age_35_59" class="gt_row gt_right gt_striped">0.5839</td>
+<td headers="pct_age_60_plus" class="gt_row gt_right gt_striped">0.0403</td></tr>
     <tr><td headers="race_id" class="gt_row gt_right">10129.2020</td>
 <td headers="mean_time_hrs" class="gt_row gt_right">7.849280</td>
-<td headers="distance_km" class="gt_row gt_right">-35.058075</td>
+<td headers="distance_km" class="gt_row gt_right">−35.0581</td>
 <td headers="elevation_gain_m" class="gt_row gt_right">185.7766</td>
-<td headers="pct_women" class="gt_row gt_right">0.2844828</td>
-<td headers="pct_age_u35" class="gt_row gt_right">0.4310345</td>
-<td headers="pct_age_35_59" class="gt_row gt_right">0.5431034</td>
-<td headers="pct_age_60_plus" class="gt_row gt_right">0.02586207</td></tr>
+<td headers="pct_women" class="gt_row gt_right">0.2845</td>
+<td headers="pct_age_u35" class="gt_row gt_right">0.4310</td>
+<td headers="pct_age_35_59" class="gt_row gt_right">0.5431</td>
+<td headers="pct_age_60_plus" class="gt_row gt_right">0.0259</td></tr>
     <tr><td headers="race_id" class="gt_row gt_right gt_striped">1014.2014</td>
 <td headers="mean_time_hrs" class="gt_row gt_right gt_striped">10.187414</td>
-<td headers="distance_km" class="gt_row gt_right gt_striped">-4.058075</td>
-<td headers="elevation_gain_m" class="gt_row gt_right gt_striped">-964.2234</td>
-<td headers="pct_women" class="gt_row gt_right gt_striped">0.2664093</td>
-<td headers="pct_age_u35" class="gt_row gt_right gt_striped">0.2586873</td>
-<td headers="pct_age_35_59" class="gt_row gt_right gt_striped">0.5791506</td>
-<td headers="pct_age_60_plus" class="gt_row gt_right gt_striped">0.16216216</td></tr>
+<td headers="distance_km" class="gt_row gt_right gt_striped">−4.0581</td>
+<td headers="elevation_gain_m" class="gt_row gt_right gt_striped">−964.2234</td>
+<td headers="pct_women" class="gt_row gt_right gt_striped">0.2664</td>
+<td headers="pct_age_u35" class="gt_row gt_right gt_striped">0.2587</td>
+<td headers="pct_age_35_59" class="gt_row gt_right gt_striped">0.5792</td>
+<td headers="pct_age_60_plus" class="gt_row gt_right gt_striped">0.1622</td></tr>
     <tr><td headers="race_id" class="gt_row gt_right">1014.2015</td>
 <td headers="mean_time_hrs" class="gt_row gt_right">10.186978</td>
-<td headers="distance_km" class="gt_row gt_right">-4.058075</td>
-<td headers="elevation_gain_m" class="gt_row gt_right">-964.2234</td>
-<td headers="pct_women" class="gt_row gt_right">0.2315789</td>
-<td headers="pct_age_u35" class="gt_row gt_right">0.2315789</td>
-<td headers="pct_age_35_59" class="gt_row gt_right">0.7157895</td>
-<td headers="pct_age_60_plus" class="gt_row gt_right">0.05263158</td></tr>
+<td headers="distance_km" class="gt_row gt_right">−4.0581</td>
+<td headers="elevation_gain_m" class="gt_row gt_right">−964.2234</td>
+<td headers="pct_women" class="gt_row gt_right">0.2316</td>
+<td headers="pct_age_u35" class="gt_row gt_right">0.2316</td>
+<td headers="pct_age_35_59" class="gt_row gt_right">0.7158</td>
+<td headers="pct_age_60_plus" class="gt_row gt_right">0.0526</td></tr>
   </tbody>
   
 </table>
