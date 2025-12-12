@@ -111,7 +111,8 @@ max(us_df$n_participants, na.rm = TRUE)
 summary(us_df$n_participants)
 ```
 
-- The 25th percentile was calculated to be races with `r quantile(us_df$n_participants, 0.25)` participants, therefore it was decided that only races with `r quantile(us_df$n_participants, 0.25)` or more participants would be analyzed as these races were sufficiently large enough while not eliminating too many data points.
+- The 25th percentile was calculated to be races with `r quantile(us_df$n_participants, 0.25)` participants.
+- Since `r quantile(us_df$n_participants, 0.25)` is still small for a race size, it was determined that races with 85 or more participants would be analyzed as these races were sufficiently large enough while not eliminating too many data points.
 
 ```{r}
 us_df <- us_df %>% filter(n_participants >= 85)
