@@ -36,6 +36,8 @@ library("MASS")
 library("car")
 #install.packages("broom")
 library(broom)
+#install.packages("gt")
+library(gt)
 ```
 
 
@@ -49,8 +51,6 @@ utmb_data <- fromJSON("utmb-race-data-raw.json", flatten=TRUE)
 ```{r include = FALSE}
 str(utmb_data[[1]])
 ```
-
-
 
 ## Data Preprocessing
 - Prior research shows that ultra marathons tend to be dominated by American and European athletes as there is little to no monetary incentive to perform well, a key factor differentiating marathon participants from ultra marathon participants.
@@ -70,6 +70,7 @@ us_races <- utmb_data[
   - 35 - 59
   - 60 and older
 - Each age group bin was also adjusted to reoprt the percentage of athletes in each age group as opposed to number as the races vary in size and participant breakdowns.
+
 ```{r}
 us_df <- imap_dfr(us_races, ~{
   results <- .x$Results
@@ -93,9 +94,11 @@ us_df <- imap_dfr(us_races, ~{
   )
 })
 ```
-- Since races also vary in number of participants, it was important to determine what the smallest acceptable race size would be to control for potential extreme race times.
-- Total numbers if participants varied from 17 to 1842, therefore it was important to eliminate some of the smaller races from the data.
-```{r}
+
+- Since races also vary in number of participants, it was important to determine what the smallest acceptable race size would be to control for potential extreme results.
+- Total numbers of participants varied from 17 to 1842, therefore it was important to eliminate some of the smaller races from the data.
+
+```{r echo = TRUE, results = FALSE}
 # min number of participants
 min(us_df$n_participants, na.rm = TRUE)
 # 17
@@ -107,11 +110,15 @@ max(us_df$n_participants, na.rm = TRUE)
 # distribution
 summary(us_df$n_participants)
 ```
-- The 25th percentile was calculated to be races with 85 participants, therefore it was decided that only races with 85 or more participants would be analyzed as these races were sufficiently large enough while not eliminating too many data points
+
+- The 25th percentile was calculated to be races with `r quantile(us_df$n_participants, 0.25)` participants, therefore it was decided that only races with `r quantile(us_df$n_participants, 0.25)` or more participants would be analyzed as these races were sufficiently large enough while not eliminating too many data points.
+
 ```{r}
 us_df <- us_df %>% filter(n_participants >= 85)
 ```
-- Distance and elevation variables were also converted from character strings to variables for analysis
+
+- Distance and elevation variables were also converted from character strings to variables for analysis.
+
 ```{r}
 colnames(us_df)[4] <- "distance_km"
 colnames(us_df)[5] <- "elevation_gain_m"
@@ -123,12 +130,18 @@ us_df <- us_df %>%
   )
 ```
 
-will also only use distances greater than or equal to 50km
+- UTMB races are not implicitly ultra marathons, therefore race distances vary anywhere from `r min(us_df$distance_km)` to `r max(us_df$distance_km)` kilometers long.
+- To ensure that only ultra marathons were being considered, only races with distances greater than or equal to 50 km.
+
 ```{r}
 us_df <- us_df %>% filter(distance_km >= 50)
 ```
 
-center distance and elevation gain values
+- The most common ultra marathon races are typically 50 km, 50 mi, 100 km, and 100 mi. Since these distances are never exact, distance (along with elevation gain) were treated as continuous variables, therefore they were centered to measure deviations from the mean to help with:
+  - model stability
+  - make interpretations of regression coefficients meaningful
+  - reducing multicollinearity
+
 ```{r}
 mean_distance_km <- mean(us_df$distance_km)
 mean_elevation_m <- mean(us_df$elevation_gain_m)
@@ -137,58 +150,130 @@ us_df$distance_km <- us_df$distance_km - mean_distance_km
 us_df$elevation_gain_m <- us_df$elevation_gain_m - mean_elevation_m
 ```
 
-# reminder that now all distance and elevation values are centered
-# distance baseline = 85.0581
-# elevation baseline = 2564.2234
+- After centering, distance and elevation baselines became:
+  - `r round(mean_distance_km, 4)` kilometers
+  - `r round(mean_elevation_m, 4)` meters
 
 
-##### EDA
+```{r}
+# table to show the first 5 rows
+table_df <- us_df |>
+  dplyr::select(
+    race_id,
+    mean_time_hrs,
+    distance_km,
+    elevation_gain_m,
+    pct_women,
+    pct_age_u35,
+    pct_age_35_59,
+    pct_age_60_plus
+  ) |>
+  slice_head(n = 5)
 
-making a correlation matrix to see which factors should be included in regression
-remove pct_u35 to fix correlation issues (perfect multicollinearity)
+# create pretty table
+gt_table <- gt(table_df) |>
+  tab_header(
+    title = "Sample of UTMB Race-Level Data",
+    subtitle = "First 5 Rows — Centered Predictors Included"
+  ) |>
+  tab_spanner(
+    label = "Centered Predictors",
+    columns = c(distance_km, elevation_gain_m)
+  ) |>
+  tab_spanner(
+    label = "Participant Demographics (%)",
+    columns = c(pct_women, pct_age_u35, pct_age_35_59, pct_age_60_plus)
+  ) |>
+  cols_label(
+    race_id = "Race ID",
+    mean_time_hrs = "Mean Finish Time (hrs)",
+    distance_km = "Distance (km, centered)",
+    elevation_gain_m = "Elevation Gain (m, centered)",
+    pct_women = "% Women",
+    pct_age_u35 = "Under 35",
+    pct_age_35_59 = "35–59",
+    pct_age_60_plus = "60+"
+  ) |>
+  opt_stylize(style = 6, color = "blue") |>
+  tab_options(
+    heading.align = "center",
+    heading.background.color = "grey",
+    heading.title.font.size = px(20)
+  )
+
+gt_table
+```
+
+
+# Exploratory Data Analysis
+
+## Correlation Matrix
+- A correlation matrix was made to determine which factors should be considered for inclusion in regression
+- Note that the Under 35 age group is excluded to prevent perfect multicillinearity.
 ```{r}
 correlation_matrix <- us_df %>% dplyr::select(distance_km, elevation_gain_m, pct_women, pct_age_35_59, pct_age_60_plus)
 
 corrplot(cor(correlation_matrix))
 ```
 
-### Preliminary scatterplots for analysis
+## Preliminary Scatterplots
+- Scatterplots of race distance and elevation against mean finish time were constructed to produce a baseline idea of variable relationships
 
-- scatterplot of distance and elevation to see if linear relationship (maybe non-linear)
-
-- scatterplot indicates potential quadratic relationship between distance and mean finish time
+### Distance vs Mean Finish Time
 ```{r}
 ggplot(us_df, aes(x = distance_km, y = mean_time_hrs)) +
-      geom_point()
-
-ggplot(us_df, aes(x = elevation_gain_m, y = mean_time_hrs)) +
-      geom_point()
+  geom_point(alpha = 0.6, size = 3) +
+  geom_smooth(method = "lm", se = FALSE, col = "#f1e60e") +
+  labs(
+    x = "Race Distance (km)",
+    y = "Mean Finish Time (hrs)",
+    title = "Race Distance Vs Mean Finish Time"
+  ) +
+  theme_minimal(base_size = 15)
 ```
 
+- The scatterplot indicates potential nonlinear relationship between distance and mean finish time.
 
+### Elevation Gain vs Mean Finish Time
+```{r}
+ggplot(us_df, aes(x = elevation_gain_m, y = mean_time_hrs)) +
+  geom_point(alpha = 0.6, size = 3) +
+  geom_smooth(method = "lm", se = FALSE, col = "#f1e60e") +
+  labs(
+    x = "Elevation Gain (m)",
+    y = "Mean Finish Time (hrs)",
+    title = "Elevation Gain Vs Mean Finish Time"
+  ) +
+  theme_minimal(base_size = 15)
+```
 
+- The scatter plot displays a moderately positive linear relationship between elevation gain and mean with time with a couple potential outliers
 
-### Regression
+# Regression
 
-prelim regression with just main effects
+## Preliminary Regression - Parsimonious Model
 remember that we are using pct_u35 as the base so it is not included in models (to avoid perfect multicollinearity)
 ```{r}
 prelim_regression <- lm(mean_time_hrs ~ distance_km + I(distance_km^2) + elevation_gain_m +
                           pct_women + pct_age_35_59 + pct_age_60_plus, data = us_df)
 summary(prelim_regression)
+```
 
+### Residuals Plots Indicating Non-normality
+```{r}
 par(mfrow = c(1,2))
 plot(prelim_regression, which=1, main="prelim model", pch=20)
 plot(prelim_regression, which=2, main="prelim model", pch=20)
 ```
-##### Using log regression as main model for robustness
-due to data not appearing to be normally distributing, going to attempt logistic regression mmodel
+
+## Log Model Moving Forward
+- Due to the data not appearing to be normally distributed, a log model will be run moving forward.
 ```{r}
 us_df <- us_df %>%
   mutate(log_mean_time = log(mean_time_hrs))
 ```
 
-parsimonious model
+### Parsimonious Model
 ```{r}
 log_regression <- lm(log_mean_time ~ distance_km + I(distance_km^2) + elevation_gain_m +
                           pct_women + pct_age_35_59 + pct_age_60_plus, data = us_df)
@@ -200,8 +285,8 @@ plot(log_regression, which=1, main="prelim model", pch=20)
 plot(log_regression, which=2, main="prelim model", pch=20)
 ```
 
-
-regressions with full model (interaction and higher order) adding only terms that are hypothesized to be significant and relevant
+### Full Model
+- Regressions with full model (interaction and higher order terms), adding only terms that are hypothesized to be significant and relevant.
 ```{r}
 full_log_regression <- lm(log_mean_time ~ distance_km + I(distance_km^2) + elevation_gain_m +
                           pct_women + pct_age_35_59 + pct_age_60_plus +
@@ -214,8 +299,9 @@ plot(full_log_regression, which=1, main="prelim model", pch=20)
 plot(full_log_regression, which=2, main="prelim model", pch=20)
 ```
 
-regression with reduced model after stepwise backward elimination
-```{r}
+```{r include = FALSE}
+#regression with reduced model after stepwise backward elimination
+
 log_backward_step_model <- stepAIC(full_log_regression, direction = "backward")
 
 summary(log_backward_step_model)
@@ -226,8 +312,7 @@ plot(log_backward_step_model, which=2, main="backward", pch=20)
 
 ```
 
-
-regression using stepwise elimination (both directions)
+### Stepwise Regression (from both directions)
 ```{r}
 log_both_step_model <- stepAIC(full_log_regression, direction = "both")
 
@@ -238,31 +323,26 @@ plot(log_both_step_model, which=1, main="both directions", pch=20)
 plot(log_both_step_model, which=2, main="both directions", pch=20)
 ```
 
-
-##### checking VIF of log stepwise regression models
+#### Checking VIF of Stepwise Regression Model
 ```{r}
 vif(log_backward_step_model, type = "predictor")
 ```
 
-look for outliers using cooks distance
+#### Checking for Outliers
 ```{r}
 cooks_distance <- cooks.distance(log_both_step_model)
 threshold <- 4 / nrow(us_df)
 influential_observations <- which(cooks_distance > threshold)
-
-plot(log_both_step_model)
 ```
+- Outliers were checked for using Cook's Distance with a threshold criteria of `r round(threshold, 4)`
 
-
-##### rerun regression without outliers to see if conclusions change (sensitivity analysis)
-
-remove outliers
+### Stepwise Regression with Outliers Removed
+- Outliers were then removed and stepwise regression from both directions was then run to check model improvement.
 ```{r}
 keep_rows <- which(cooks_distance <= threshold)
 us_df_no_outliers <- us_df[keep_rows, ]
 ```
 
-stepwise regression using data with outliers removes to check sensitivity and robustness
 ```{r}
 no_outlier_log_regression <- lm(log_mean_time ~ distance_km + I(distance_km^2) + elevation_gain_m +
                           pct_women + pct_age_35_59 + pct_age_60_plus +
@@ -280,28 +360,24 @@ plot(outlierless_log_both_step_model, which=2, main="both directions", pch=20)
 
 
 
-```{r}
+```{r include = FALSE}
 plot(log_both_step_model)
+
+# these clusters are due to the most common distances 50k, 50mi, 100k, and 100mi
+# deciding to use the outlier-free model
 ```
 
-these clusters are due to the most common distances 50k, 50mi, 100k, and 100mi
-
-
-deciding to use the outlier-free model
-
-
-vif analysis
+#### VIF Analysis
 ```{r}
 vif(outlierless_log_both_step_model, type = "predictor")
 ```
 
 
 
-#### making scatterplots to put on the poster to show distributions
 
 
-scatterplot of distance and mean time (with outliers)
-```{r}
+```{r include = FALSE}
+# scatterplot of distance and time with outliers
 ggplot(us_df, aes(x = distance_km, y = mean_time_hrs)) +
   geom_point(alpha = 0.6, size = 3) +
   geom_smooth(method = "lm", se = FALSE, col = "#f1e60e") +
@@ -313,10 +389,8 @@ ggplot(us_df, aes(x = distance_km, y = mean_time_hrs)) +
   theme_minimal(base_size = 15)
 ```
 
-
-
-first scatterplot of mean time and distance with outliers removed
-```{r}
+```{r include = FALSE}
+# scatterplot of distance and time with outliers removed
 ggplot(us_df_no_outliers, aes(x = distance_km, y = mean_time_hrs)) +
   geom_point(alpha = 0.6, size = 3) +
   geom_smooth(method = "lm", se = FALSE, col = "#f1e60e") +
@@ -328,11 +402,8 @@ ggplot(us_df_no_outliers, aes(x = distance_km, y = mean_time_hrs)) +
   theme_minimal(base_size = 15)
 ```
 
-
-
-
-second scatterplot of mean time and elevation gain (with outliers)
-```{r}
+```{r include = FALSE}
+# scatterplot of elevation gain and time (with outliers)
 ggplot(us_df, aes(x = elevation_gain_m, y = mean_time_hrs)) +
   geom_point(alpha = 0.6, size = 3) +
   geom_smooth(method = "lm", se = FALSE, col = "#f1e60e") +
@@ -344,9 +415,8 @@ ggplot(us_df, aes(x = elevation_gain_m, y = mean_time_hrs)) +
   theme_minimal(base_size = 15)
 ```
 
-
-second scatterplot of mean time and elevation gain with outliers removed
-```{r}
+```{r include = FALSE}
+# scatterplot of elevation gain and time (with outliers removed)
 ggplot(us_df_no_outliers, aes(x = elevation_gain_m, y = mean_time_hrs)) +
   geom_point(alpha = 0.6, size = 3) +
   geom_smooth(method = "lm", se = FALSE, col = "#f1e60e") +
@@ -357,10 +427,3 @@ ggplot(us_df_no_outliers, aes(x = elevation_gain_m, y = mean_time_hrs)) +
   ) +
   theme_minimal(base_size = 15)
 ```
-
-
-
-
-
-
-
