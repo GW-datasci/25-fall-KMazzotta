@@ -1,11 +1,21 @@
 ---
-title: "final_data_analysis"
-output: pdf_document
+title: "Data Science Capstone Data Analysis"
+output:
+  html_document:
+    code_folding: hide
+    number_sections: false
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+author: "Kyla Mazzotta"
+# date: "today"
+date: "`r Sys.Date()`"
 ---
 
-
-- install and load necessary packages
-```{r}
+```{r include = FALSE}
 #install.packages("jsonlite")
 library(jsonlite)
 #install.packages("dplyr")
@@ -26,29 +36,26 @@ library("MASS")
 library("car")
 #install.packages("broom")
 library(broom)
-
-
 ```
 
 
-- This is where I'm loading the dataset in
-- converting file to csv
-- creating a us subset for only us races
-- also creating a csv file for just all races
-
+# Data
+- A dataset containing web scraped race results from the UTMB website
+- Originally a json object, was then loaded before preprocessing
 ```{r}
 utmb_data <- fromJSON("utmb-race-data-raw.json", flatten=TRUE)
 ```
 
-```{r}
+```{r include = FALSE}
 str(utmb_data[[1]])
 ```
 
 
 
-##### US races
-
-creating a json variable of us races
+## Data Preprocessing
+- Prior research shows that ultra marathons tend to be dominated by American and European athletes as there is little to no monetary incentive to perform well, a key factor differentiating marathon participants from ultra marathon participants.
+- The main focus for this statistical analysis was therefore to isolate races that occurred in the United States to reduce potential variability in results across finish times with differen participant demographics country-wise.
+- The UTMB race results were then filtered to only contain data on races located in the US
 ```{r}
 us_races <- utmb_data[
   sapply(utmb_data, function(x) {
@@ -57,8 +64,12 @@ us_races <- utmb_data[
 ]
 ```
 
-turning us races ito a data frame for analysis
-also changing age categories to have larger bins: under 34, 35-59, 60+ as there isnt that much variation with only a few years
+- The dataset of US races was then converted into a data frame to prepare for exploratory data analysis (EDA)
+- The original dataset contained information on the number of participants in. each age 4-year age group. Since the there is little variation in finish times with such small age groups, they were consolidated into three bins:
+  - Under 35
+  - 35 - 59
+  - 60 and older
+- Each age group bin was also adjusted to reoprt the percentage of athletes in each age group as opposed to number as the races vary in size and participant breakdowns.
 ```{r}
 us_df <- imap_dfr(us_races, ~{
   results <- .x$Results
@@ -81,10 +92,9 @@ us_df <- imap_dfr(us_races, ~{
     pct_age_60_plus = sum(unlist(.x$Age[c("60-64", "65-69", "70-74", "75-79", "80+")]), na.rm = TRUE) / total_age
   )
 })
-
 ```
-
-find a cutoff for race size (number of participants)
+- Since races also vary in number of participants, it was important to determine what the smallest acceptable race size would be to control for potential extreme race times.
+- Total numbers if participants varied from 17 to 1842, therefore it was important to eliminate some of the smaller races from the data.
 ```{r}
 # min number of participants
 min(us_df$n_participants, na.rm = TRUE)
@@ -92,19 +102,16 @@ min(us_df$n_participants, na.rm = TRUE)
 
 # max number of participants
 max(us_df$n_participants, na.rm = TRUE)
-1842
+# 1842
 
 # distribution
 summary(us_df$n_participants)
 ```
-
-will use the 1st quartile as the cutoff (min number of participants for a race to be included) (85 participants)
-
+- The 25th percentile was calculated to be races with 85 participants, therefore it was decided that only races with 85 or more participants would be analyzed as these races were sufficiently large enough while not eliminating too many data points
 ```{r}
 us_df <- us_df %>% filter(n_participants >= 85)
 ```
-
-convert distance and elevation columns to be numeric
+- Distance and elevation variables were also converted from character strings to variables for analysis
 ```{r}
 colnames(us_df)[4] <- "distance_km"
 colnames(us_df)[5] <- "elevation_gain_m"
