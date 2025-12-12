@@ -95,31 +95,8 @@ us_df <- imap_dfr(us_races, ~{
 })
 ```
 
-- Since races also vary in number of participants, it was important to determine what the smallest acceptable race size would be to control for potential extreme results.
-- Total numbers of participants varied from 17 to 1842, therefore it was important to eliminate some of the smaller races from the data.
-
-```{r echo = TRUE, results = FALSE}
-# min number of participants
-min(us_df$n_participants, na.rm = TRUE)
-# 17
-
-# max number of participants
-max(us_df$n_participants, na.rm = TRUE)
-# 1842
-
-# distribution
-summary(us_df$n_participants)
-```
-
-- The 25th percentile was calculated to be races with `r quantile(us_df$n_participants, 0.25)` participants.
-- Since `r quantile(us_df$n_participants, 0.25)` is still small for a race size, it was determined that races with 85 or more participants would be analyzed as these races were sufficiently large enough while not eliminating too many data points.
-
-```{r}
-us_df <- us_df %>% filter(n_participants >= 85)
-```
 
 - Distance and elevation variables were also converted from character strings to variables for analysis.
-
 ```{r}
 colnames(us_df)[4] <- "distance_km"
 colnames(us_df)[5] <- "elevation_gain_m"
@@ -133,10 +110,33 @@ us_df <- us_df %>%
 
 - UTMB races are not implicitly ultra marathons, therefore race distances vary anywhere from `r min(us_df$distance_km)` to `r max(us_df$distance_km)` kilometers long.
 - To ensure that only ultra marathons were being considered, only races with distances greater than or equal to 50 km.
-
 ```{r}
 us_df <- us_df %>% filter(distance_km >= 50)
 ```
+
+- Since races also vary in number of participants, it was important to determine what the smallest acceptable race size would be to control for potential extreme results.
+- Total numbers of participants varied from 17 to 1842, therefore it was important to eliminate some of the smaller races from the data.
+
+```{r echo = TRUE, results = FALSE}
+# min number of participants
+min(us_df$n_participants, na.rm = TRUE)
+# 1
+
+# max number of participants
+max(us_df$n_participants, na.rm = TRUE)
+# 1000
+
+# distribution
+summary(us_df$n_participants)
+```
+
+- The 50th percentile was calculated to be races with `r quantile(us_df$n_participants, 0.5)` participants.
+- It was therefore determined that races with `r quantile(us_df$n_participants, 0.5) + 1` or more participants would be analyzed as these races were sufficiently large enough while not eliminating too many data points.
+
+```{r}
+us_df <- us_df %>% filter(n_participants >= 85)
+```
+
 
 - The most common ultra marathon races are typically 50 km, 50 mi, 100 km, and 100 mi. Since these distances are never exact, distance (along with elevation gain) were treated as continuous variables, therefore they were centered to measure deviations from the mean to help with:
   - model stability

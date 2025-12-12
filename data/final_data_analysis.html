@@ -1639,32 +1639,6 @@ size and participant breakdowns.</li>
   )
 })</code></pre>
 <ul>
-<li>Since races also vary in number of participants, it was important to
-determine what the smallest acceptable race size would be to control for
-potential extreme results.</li>
-<li>Total numbers of participants varied from 17 to 1842, therefore it
-was important to eliminate some of the smaller races from the data.</li>
-</ul>
-<pre class="r"><code># min number of participants
-min(us_df$n_participants, na.rm = TRUE)
-# 17
-
-# max number of participants
-max(us_df$n_participants, na.rm = TRUE)
-# 1842
-
-# distribution
-summary(us_df$n_participants)</code></pre>
-<ul>
-<li>The 25th percentile was calculated to be races with 48
-participants.</li>
-<li>Since 48 is still small for a race size, it was determined that
-races with 85 or more participants would be analyzed as these races were
-sufficiently large enough while not eliminating too many data
-points.</li>
-</ul>
-<pre class="r"><code>us_df &lt;- us_df %&gt;% filter(n_participants &gt;= 85)</code></pre>
-<ul>
 <li>Distance and elevation variables were also converted from character
 strings to variables for analysis.</li>
 </ul>
@@ -1676,13 +1650,47 @@ us_df &lt;- us_df %&gt;%
     distance_km = parse_number(distance_km),
     elevation_gain_m = parse_number(elevation_gain_m)
   )</code></pre>
+<pre><code>## Warning: There was 1 warning in `mutate()`.
+## ℹ In argument: `elevation_gain_m = parse_number(elevation_gain_m)`.
+## Caused by warning:
+## ! 4 parsing failures.
+##  row col expected actual
+## 2018  -- a number      -
+## 3896  -- a number      -
+## 3897  -- a number      -
+## 3900  -- a number      -</code></pre>
 <ul>
 <li>UTMB races are not implicitly ultra marathons, therefore race
-distances vary anywhere from 8 to 310.6 kilometers long.</li>
+distances vary anywhere from 4.7 to 336.5 kilometers long.</li>
 <li>To ensure that only ultra marathons were being considered, only
 races with distances greater than or equal to 50 km.</li>
 </ul>
 <pre class="r"><code>us_df &lt;- us_df %&gt;% filter(distance_km &gt;= 50)</code></pre>
+<ul>
+<li>Since races also vary in number of participants, it was important to
+determine what the smallest acceptable race size would be to control for
+potential extreme results.</li>
+<li>Total numbers of participants varied from 17 to 1842, therefore it
+was important to eliminate some of the smaller races from the data.</li>
+</ul>
+<pre class="r"><code># min number of participants
+min(us_df$n_participants, na.rm = TRUE)
+# 1
+
+# max number of participants
+max(us_df$n_participants, na.rm = TRUE)
+# 1000
+
+# distribution
+summary(us_df$n_participants)</code></pre>
+<ul>
+<li>The 50th percentile was calculated to be races with 84
+participants.</li>
+<li>It was therefore determined that races with 85 or more participants
+would be analyzed as these races were sufficiently large enough while
+not eliminating too many data points.</li>
+</ul>
+<pre class="r"><code>us_df &lt;- us_df %&gt;% filter(n_participants &gt;= 85)</code></pre>
 <ul>
 <li>The most common ultra marathon races are typically 50 km, 50 mi, 100
 km, and 100 mi. Since these distances are never exact, distance (along
@@ -1752,20 +1760,20 @@ gt_table &lt;- gt(table_df) |&gt;
   )
 
 gt_table</code></pre>
-<div id="yisopoxoiz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#yisopoxoiz table {
+<div id="dlgdcdvlmk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#dlgdcdvlmk table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#yisopoxoiz thead, #yisopoxoiz tbody, #yisopoxoiz tfoot, #yisopoxoiz tr, #yisopoxoiz td, #yisopoxoiz th {
+#dlgdcdvlmk thead, #dlgdcdvlmk tbody, #dlgdcdvlmk tfoot, #dlgdcdvlmk tr, #dlgdcdvlmk td, #dlgdcdvlmk th {
 border-style: none;
 }
-#yisopoxoiz p {
+#dlgdcdvlmk p {
 margin: 0;
 padding: 0;
 }
-#yisopoxoiz .gt_table {
+#dlgdcdvlmk .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -1790,11 +1798,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#yisopoxoiz .gt_caption {
+#dlgdcdvlmk .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#yisopoxoiz .gt_title {
+#dlgdcdvlmk .gt_title {
 color: #333333;
 font-size: 20px;
 font-weight: initial;
@@ -1805,7 +1813,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#yisopoxoiz .gt_subtitle {
+#dlgdcdvlmk .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -1816,7 +1824,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#yisopoxoiz .gt_heading {
+#dlgdcdvlmk .gt_heading {
 background-color: #BEBEBE;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -1827,12 +1835,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#yisopoxoiz .gt_bottom_border {
+#dlgdcdvlmk .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #5F5F5F;
 }
-#yisopoxoiz .gt_col_headings {
+#dlgdcdvlmk .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #5F5F5F;
@@ -1846,7 +1854,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#yisopoxoiz .gt_col_heading {
+#dlgdcdvlmk .gt_col_heading {
 color: #FFFFFF;
 background-color: #0076BA;
 font-size: 100%;
@@ -1865,7 +1873,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#yisopoxoiz .gt_column_spanner_outer {
+#dlgdcdvlmk .gt_column_spanner_outer {
 color: #FFFFFF;
 background-color: #0076BA;
 font-size: 100%;
@@ -1876,13 +1884,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#yisopoxoiz .gt_column_spanner_outer:first-child {
+#dlgdcdvlmk .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#yisopoxoiz .gt_column_spanner_outer:last-child {
+#dlgdcdvlmk .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#yisopoxoiz .gt_column_spanner {
+#dlgdcdvlmk .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #5F5F5F;
@@ -1893,10 +1901,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#yisopoxoiz .gt_spanner_row {
+#dlgdcdvlmk .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#yisopoxoiz .gt_group_heading {
+#dlgdcdvlmk .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1921,7 +1929,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#yisopoxoiz .gt_empty_group_heading {
+#dlgdcdvlmk .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -1935,13 +1943,13 @@ border-bottom-width: 2px;
 border-bottom-color: #5F5F5F;
 vertical-align: middle;
 }
-#yisopoxoiz .gt_from_md > :first-child {
+#dlgdcdvlmk .gt_from_md > :first-child {
 margin-top: 0;
 }
-#yisopoxoiz .gt_from_md > :last-child {
+#dlgdcdvlmk .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#yisopoxoiz .gt_row {
+#dlgdcdvlmk .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1959,7 +1967,7 @@ border-right-color: #D5D5D5;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#yisopoxoiz .gt_stub {
+#dlgdcdvlmk .gt_stub {
 color: #333333;
 background-color: #89D3FE;
 font-size: 100%;
@@ -1971,7 +1979,7 @@ border-right-color: #D5D5D5;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yisopoxoiz .gt_stub_row_group {
+#dlgdcdvlmk .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1984,13 +1992,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#yisopoxoiz .gt_row_group_first td {
+#dlgdcdvlmk .gt_row_group_first td {
 border-top-width: 2px;
 }
-#yisopoxoiz .gt_row_group_first th {
+#dlgdcdvlmk .gt_row_group_first th {
 border-top-width: 2px;
 }
-#yisopoxoiz .gt_summary_row {
+#dlgdcdvlmk .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1999,14 +2007,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yisopoxoiz .gt_first_summary_row {
+#dlgdcdvlmk .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #5F5F5F;
 }
-#yisopoxoiz .gt_first_summary_row.thick {
+#dlgdcdvlmk .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#yisopoxoiz .gt_last_summary_row {
+#dlgdcdvlmk .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2015,7 +2023,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #5F5F5F;
 }
-#yisopoxoiz .gt_grand_summary_row {
+#dlgdcdvlmk .gt_grand_summary_row {
 color: #333333;
 background-color: #D5D5D5;
 text-transform: inherit;
@@ -2024,7 +2032,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yisopoxoiz .gt_first_grand_summary_row {
+#dlgdcdvlmk .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2033,7 +2041,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #5F5F5F;
 }
-#yisopoxoiz .gt_last_grand_summary_row_top {
+#dlgdcdvlmk .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2042,10 +2050,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #5F5F5F;
 }
-#yisopoxoiz .gt_striped {
+#dlgdcdvlmk .gt_striped {
 background-color: #EDF7FC;
 }
-#yisopoxoiz .gt_table_body {
+#dlgdcdvlmk .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #5F5F5F;
@@ -2053,7 +2061,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #5F5F5F;
 }
-#yisopoxoiz .gt_footnotes {
+#dlgdcdvlmk .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2066,7 +2074,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#yisopoxoiz .gt_footnote {
+#dlgdcdvlmk .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -2074,7 +2082,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yisopoxoiz .gt_sourcenotes {
+#dlgdcdvlmk .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2087,64 +2095,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#yisopoxoiz .gt_sourcenote {
+#dlgdcdvlmk .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yisopoxoiz .gt_left {
+#dlgdcdvlmk .gt_left {
 text-align: left;
 }
-#yisopoxoiz .gt_center {
+#dlgdcdvlmk .gt_center {
 text-align: center;
 }
-#yisopoxoiz .gt_right {
+#dlgdcdvlmk .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#yisopoxoiz .gt_font_normal {
+#dlgdcdvlmk .gt_font_normal {
 font-weight: normal;
 }
-#yisopoxoiz .gt_font_bold {
+#dlgdcdvlmk .gt_font_bold {
 font-weight: bold;
 }
-#yisopoxoiz .gt_font_italic {
+#dlgdcdvlmk .gt_font_italic {
 font-style: italic;
 }
-#yisopoxoiz .gt_super {
+#dlgdcdvlmk .gt_super {
 font-size: 65%;
 }
-#yisopoxoiz .gt_footnote_marks {
+#dlgdcdvlmk .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#yisopoxoiz .gt_asterisk {
+#dlgdcdvlmk .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#yisopoxoiz .gt_indent_1 {
+#dlgdcdvlmk .gt_indent_1 {
 text-indent: 5px;
 }
-#yisopoxoiz .gt_indent_2 {
+#dlgdcdvlmk .gt_indent_2 {
 text-indent: 10px;
 }
-#yisopoxoiz .gt_indent_3 {
+#dlgdcdvlmk .gt_indent_3 {
 text-indent: 15px;
 }
-#yisopoxoiz .gt_indent_4 {
+#dlgdcdvlmk .gt_indent_4 {
 text-indent: 20px;
 }
-#yisopoxoiz .gt_indent_5 {
+#dlgdcdvlmk .gt_indent_5 {
 text-indent: 25px;
 }
-#yisopoxoiz .katex-display {
+#dlgdcdvlmk .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#yisopoxoiz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#dlgdcdvlmk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
